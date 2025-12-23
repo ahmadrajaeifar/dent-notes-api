@@ -44,6 +44,19 @@ namespace DentalClinic.Api.Services
             return null;
         }
 
+        public Dentist? UpdateDentist(int id, DentistUpdateDto update)
+        {
+            var dentist = _repo.GetDentistById(id);
+            if (dentist == null) return null;
+
+            dentist.Fullname = update.Fullname;
+            if (!string.IsNullOrWhiteSpace(update.Password))
+                dentist.PasswordHash = HashPassword(update.Password);
+
+            _repo.EditDentist(dentist);
+            return dentist;
+        }
+
         private string HashPassword(string password)
         {
             var sha = SHA256.Create();

@@ -27,7 +27,22 @@ namespace DentalClinic.Api.Repositories
             return dentist;
         }
 
+        public Dentist? EditDentist(Dentist dentist)
+        {
+            var existing = GetDentistById(dentist.Id);
+            if (existing == null) return null;
+
+            existing.Fullname = dentist.Fullname;
+            existing.PasswordHash = dentist.PasswordHash;
+
+            _context.SaveChanges();
+            return existing;
+        }
+
         public Dentist? GetDentistByUsername(string username) =>
             _context.Dentists.FirstOrDefault(x => x.Username == username);
+
+        public Dentist? GetDentistById(int id) =>
+            _context.Dentists.FirstOrDefault(x => x.Id == id);
     }
 }
