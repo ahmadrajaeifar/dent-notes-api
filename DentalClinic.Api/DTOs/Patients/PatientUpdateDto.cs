@@ -2,7 +2,7 @@
 
 namespace DentalClinic.Api.DTOs.Patients
 {
-    public class PtientUpdateDto
+    public class PatientUpdateDto
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
