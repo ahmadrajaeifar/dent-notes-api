@@ -12,6 +12,7 @@ namespace DentalClinic.Api.Entities
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public DateTime CreatedOn { get; set; }
+        public string Role { get; set; } = "Dentist";
 
         public ICollection<Patient> Patients { get; set; } = new List<Patient>();
     }

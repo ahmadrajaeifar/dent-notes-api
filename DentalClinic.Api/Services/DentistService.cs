@@ -9,9 +9,11 @@ namespace DentalClinic.Api.Services
     public class DentistService
     {
         private readonly DentistRepository _repo;
-        public DentistService(DentistRepository repo)
+        private readonly TokenService _tokenService;
+        public DentistService(DentistRepository repo, TokenService tokenService)
         {
             _repo = repo;
+            _tokenService = tokenService;
         }
 
         public Dentist? Register(DentistCreateDto register)
@@ -33,16 +35,37 @@ namespace DentalClinic.Api.Services
             return dentist;
         }
 
-        public Dentist? ValidateUser(DentistLoginDto loginDto)
+        public DentistLoginResultDto? Login(DentistLoginDto loginDto)
         {
             var dentist = _repo.GetDentistByUsername(loginDto.Username);
-            if (dentist == null) return null;
 
-            if (VerifyPassword(loginDto.Password, dentist.PasswordHash))
-                return dentist;
+            if (dentist == null) 
+                return null;
 
-            return null;
+            if (!VerifyPassword(loginDto.Password, dentist.PasswordHash)) 
+                return null;
+            
+            var token = _tokenService.GenerateToken(dentist);
+            
+            return new DentistLoginResultDto
+            {
+                Id = dentist.Id,
+                Fullname = dentist.Fullname,
+                Username = dentist.Username,
+                Token = token
+            };
         }
+
+        //public Dentist? ValidateUser(DentistLoginDto loginDto)
+        //{
+        //    var dentist = _repo.GetDentistByUsername(loginDto.Username);
+        //    if (dentist == null) return null;
+
+        //    if (VerifyPassword(loginDto.Password, dentist.PasswordHash))
+        //        return dentist;
+
+        //    return null;
+        //}
 
         public Dentist? UpdateDentist(int id, DentistUpdateDto update)
         {
@@ -55,6 +78,11 @@ namespace DentalClinic.Api.Services
 
             _repo.EditDentist(dentist);
             return dentist;
+        }
+
+        public Dentist? GetDentistById(int id)
+        {
+            return _repo.GetDentistById(id);
         }
 
         private string HashPassword(string password)
