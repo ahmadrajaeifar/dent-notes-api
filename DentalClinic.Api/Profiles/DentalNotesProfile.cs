@@ -12,6 +12,7 @@ namespace DentalClinic.Api.Profiles
             // Model -> DTO
             CreateMap<Patient, PatientReadDto>();
             CreateMap<Dentist, DentistReadDto>();
+            CreateMap<DentistLoginResultDto, DentistReadDto>();
 
             //DTO -> Model
             CreateMap<PatientCreateDto, Patient>();

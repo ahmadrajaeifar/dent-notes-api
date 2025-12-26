@@ -56,16 +56,16 @@ namespace DentalClinic.Api.Services
             };
         }
 
-        //public Dentist? ValidateUser(DentistLoginDto loginDto)
-        //{
-        //    var dentist = _repo.GetDentistByUsername(loginDto.Username);
-        //    if (dentist == null) return null;
+        public Dentist? ValidateUser(string username, string password)
+        {
+            var dentist = _repo.GetDentistByUsername(username);
+            if (dentist == null) return null;
 
-        //    if (VerifyPassword(loginDto.Password, dentist.PasswordHash))
-        //        return dentist;
+            if (VerifyPassword(password, dentist.PasswordHash))
+                return dentist;
 
-        //    return null;
-        //}
+            return null;
+        }
 
         public Dentist? UpdateDentist(int id, DentistUpdateDto update)
         {
@@ -83,6 +83,27 @@ namespace DentalClinic.Api.Services
         public Dentist? GetDentistById(int id)
         {
             return _repo.GetDentistById(id);
+        }
+
+        public Dentist? GetDentistByUsername(string username) =>
+            _repo.GetDentistByUsername(username);
+
+        private string GenerateRefreshToken()
+        {
+            var randomBytes = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        public string SetRefreshToken(Dentist dentist)
+        {
+            var refreshToken = GenerateRefreshToken();
+            dentist.RefreshToken = refreshToken;
+            dentist.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            _repo.EditDentist(dentist); // Save changes
+            return refreshToken;
         }
 
         private string HashPassword(string password)

@@ -11,7 +11,11 @@ namespace DentalClinic.Api.Entities
             "به منظور بازیابی رمز فراموش شده، وارد کردن ایمیل معتبر، ضروری است")]
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public DateTime CreatedOn { get; set; }
+
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public string Role { get; set; } = "Dentist";
 
         public ICollection<Patient> Patients { get; set; } = new List<Patient>();

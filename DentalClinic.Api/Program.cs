@@ -1,25 +1,32 @@
-using DentalClinic.Api.Data.DBContext;
+﻿using DentalClinic.Api.Data.DBContext;
+using DentalClinic.Api.Filters;
 using DentalClinic.Api.Middlewares;
 using DentalClinic.Api.Repositories;
 using DentalClinic.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+    options.Filters.Add<ValidationFilter>()
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("DentalClinincDb"));
+
 builder.Services.AddScoped<DentistRepository>();
 builder.Services.AddScoped<DentistService>();
+builder.Services.AddScoped<PatientRepository>();
+builder.Services.AddScoped<PatientService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -42,24 +49,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme."
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'"
     });
 
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                Reference = new OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
@@ -69,7 +77,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireDentistRole", policy =>
+        policy.RequireRole("Dentist"));
+
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("RequireDentistOrAdmin", policy =>
+        policy.RequireRole("Dentist", "Admin"));
+});
 
 var app = builder.Build();
 

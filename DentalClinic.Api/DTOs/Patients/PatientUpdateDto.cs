@@ -4,13 +4,23 @@ namespace DentalClinic.Api.DTOs.Patients
 {
     public class PatientUpdateDto
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? Email { get; set; }
-        [RegularExpression(@"\d{10}", 
-            ErrorMessage = "کد ملی باید 10 رقمی باشد")]
+        [Required(ErrorMessage = "نام الزامی است")]
+        [StringLength(50, MinimumLength = 2,
+        ErrorMessage = "نام باید بین ۲ تا ۵۰ کاراکتر باشد")]
+        public string FirstName { get; set; } = null!;
+
+        [Required(ErrorMessage = "نام خانوادگی الزامی است")]
+        [StringLength(50, MinimumLength = 2)]
+        public string LastName { get; set; } = null!;
+
+        [StringLength(10, MinimumLength = 10, 
+            ErrorMessage = "کد ملی باید ۱۰ رقم باشد")]
         public string? NationalCode { get; set; }
-        public string? Notes { get; set; }
+
+        [Phone(ErrorMessage = "شماره تماس نامعتبر است")]
+        public string? PhoneNumber { get; set; }
+
+        [EmailAddress(ErrorMessage = "ایمیل نامعتبر است")]
+        public string? Email { get; set; }
     }
 }
