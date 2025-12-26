@@ -18,6 +18,8 @@ namespace DentalClinic.Api.Entities
         public int DentistId { get; set; } //FK
         public Dentist Dentist { get; set; } = null!;
 
+        public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+
         public bool IsDeleted { get; set; } = false;
     }
 }

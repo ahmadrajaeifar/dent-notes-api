@@ -1,6 +1,8 @@
-﻿using DentalClinic.Api.DTOs.Dentists;
+﻿using DentalClinic.Api.Data.DBContext;
+using DentalClinic.Api.DTOs.Dentists;
 using DentalClinic.Api.Entities;
 using DentalClinic.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,12 +10,35 @@ namespace DentalClinic.Api.Services
 {
     public class DentistService
     {
+        private readonly AppDbContext _context;
         private readonly DentistRepository _repo;
         private readonly TokenService _tokenService;
-        public DentistService(DentistRepository repo, TokenService tokenService)
+        public DentistService(
+            AppDbContext context, 
+            DentistRepository repo, 
+            TokenService tokenService)
         {
+            _context = context;
             _repo = repo;
             _tokenService = tokenService;
+        }
+
+        public List<MonthlyIncomeDto> GetMonthlyIncome(int dentistId, int year)
+        {
+            var invoices = _context.Invoices
+                .Include(i => i.Payments)
+                .Where(i => i.Patient.DentistId == dentistId && i.CreatedOn.Year == year)
+                .ToList();
+
+            return invoices
+                .SelectMany(i => i.Payments)
+                .GroupBy(p => new { p.PaidAt.Year, p.PaidAt.Month })
+                .Select(g => new MonthlyIncomeDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalIncome = g.Sum(x => x.Amount)
+                }).ToList();
         }
 
         public Dentist? Register(DentistCreateDto register)

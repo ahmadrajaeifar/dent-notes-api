@@ -1,18 +1,20 @@
 ﻿using DentalClinic.Api.Data.DBContext;
 using DentalClinic.Api.DTOs.Patients;
+using DentalClinic.Api.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalClinic.Api.Services
 {
-    public class PatientServiceService
+    public class PatientProcedureService
     {
         private readonly AppDbContext _context;
 
-        public PatientServiceService(AppDbContext context)
+        public PatientProcedureService(AppDbContext context)
         {
             _context = context;
         }
 
-        public PatientService? AddService(
+        public PatientProcedure? AddService(
             PatientServiceCreateDto dto,
             int dentistId)
         {
@@ -31,7 +33,7 @@ namespace DentalClinic.Api.Services
             if (tariff == null)
                 return null;
 
-            var patientService = new PatientService
+            var patientService = new PatientProcedure
             {
                 PatientId = dto.PatientId,
                 DentalServiceId = dto.DentalServiceId,
@@ -44,5 +46,31 @@ namespace DentalClinic.Api.Services
 
             return patientService;
         }
+
+        public PatientDebtDto GetPatientDebt(int patientId)
+        {
+            var patient = _context.Patients
+                .Include(p => p.Invoices)
+                    .ThenInclude(i => i.Items)
+                .Include(p => p.Invoices)
+                    .ThenInclude(i => i.Payments)
+                .FirstOrDefault(p => p.Id == patientId);
+
+            if (patient == null) 
+                throw new Exception("بیمار یافت نشد!");
+
+            var total = patient.Invoices.Sum(i => i.TotalAmount);
+            var paid = patient.Invoices.Sum(i => i.PaidAmount);
+
+            return new PatientDebtDto
+            {
+                PatientId = patient.Id,
+                Fullname = patient.FirstName + " " + patient.LastName,
+                TotalDebt = total,
+                PaidAmount = paid,
+                RemainingAmount = total - paid
+            };
+        }
+
     }
 }

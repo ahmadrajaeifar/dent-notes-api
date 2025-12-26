@@ -12,9 +12,9 @@ namespace DentalClinic.Api.Controllers
     [ApiController]
     public class PatientServiceController : ControllerBase
     {
-        private readonly PatientServiceService _service;
+        private readonly PatientProcedureService _service;
 
-        public PatientServiceController(PatientServiceService service)
+        public PatientServiceController(PatientProcedureService service)
         {
             _service = service;
         }

@@ -1,4 +1,7 @@
-﻿using DentalClinic.Api.Data;
+﻿using AutoMapper;
+using DentalClinic.Api.Data;
+using DentalClinic.Api.DTOs.Common;
+using DentalClinic.Api.DTOs.Invoices;
 using DentalClinic.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,22 +15,48 @@ namespace DentalClinic.Api.Controllers
     public class InvoiceController : ControllerBase
     {
         private readonly InvoiceService _invoiceService;
+        private readonly IMapper _mapper;
 
-        public InvoiceController(InvoiceService invoiceService)
+        public InvoiceController(
+            InvoiceService invoiceService,
+            IMapper mapper)
         {
             _invoiceService = invoiceService;
+            _mapper = mapper;
         }
 
-        [HttpGet("{patientId}")]
-        public IActionResult GetInvoice(int patientId)
+        [HttpPost("{patientId}")]
+        public IActionResult CreateInvoice(int patientId, 
+            [FromBody] List<InvoiceItemCreateDto> items)
         {
-            int dentistId = User.GetUserId();
+            var invoice = _invoiceService.CreateInvoice(patientId, items);
+            var dto = _mapper.Map<InvoiceReadDto>(invoice);
 
-            var invoice = _invoiceService.GenerateInvoice(patientId, dentistId);
+            return Ok(new ApiResponse<InvoiceReadDto>(dto));
+        }
+
+        [HttpPost("{invoiceId}/items")]
+        public IActionResult AddService(
+            int invoiceId,
+            AddServiceToInvoiceDto dto)
+        {
+            var item = _invoiceService.AddServiceToInvoice(
+                invoiceId,
+                dto.DentalServiceId,
+                dto.Price);
+
+            return Ok(new ApiResponse<object>(item));
+        }
+
+        [HttpGet("{invoiceId}")]
+        public IActionResult GetInvoice(int invoiceId)
+        {
+            var invoice = _invoiceService.GetInvoice(invoiceId);
             if (invoice == null)
-                return NotFound("بیمار یافت نشد");
+                return NotFound(new ApiResponse<string>("صورتحساب یافت نشد!"));
 
-            return Ok(invoice);
+            var dto = _mapper.Map<InvoiceReadDto>(invoice);
+            return Ok(new ApiResponse<InvoiceReadDto>(dto));
         }
     }
 }

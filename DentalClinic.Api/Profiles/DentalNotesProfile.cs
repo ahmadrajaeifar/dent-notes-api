@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using DentalClinic.Api.DTOs.Dentists;
+using DentalClinic.Api.DTOs.Invoices;
 using DentalClinic.Api.DTOs.Patients;
 using DentalClinic.Api.Entities;
 
 namespace DentalClinic.Api.Profiles
 {
-    public class DentalNotesProfile: Profile
+    public class DentalNotesProfile : Profile
     {
         public DentalNotesProfile()
         {
@@ -13,6 +14,13 @@ namespace DentalClinic.Api.Profiles
             CreateMap<Patient, PatientReadDto>();
             CreateMap<Dentist, DentistReadDto>();
             CreateMap<DentistLoginResultDto, DentistReadDto>();
+            CreateMap<Invoice, InvoiceReadDto>()
+                .ForMember(d => d.TotalAmount,
+                    o => o.MapFrom(s => s.TotalAmount))
+                .ForMember(d => d.PaidAmount,
+                    o => o.MapFrom(s => s.PaidAmount))
+                .ForMember(d => d.RemainingAmount,
+                    o => o.MapFrom(s => s.RemainingAmount));
 
             //DTO -> Model
             CreateMap<PatientCreateDto, Patient>();

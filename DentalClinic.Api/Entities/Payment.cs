@@ -1,21 +1,20 @@
-﻿namespace DentalClinic.Api.Entities
+﻿using DentalClinic.Api.Enums;
+
+namespace DentalClinic.Api.Entities
 {
     public class Payment
     {
         public int Id { get; set; }
 
-        public int PatientId { get; set; }
-        public Patient Patient { get; set; } = null!;
+        public int InvoiceId { get; set; }
+        public Invoice Invoice { get; set; } = null!;
 
         public decimal Amount { get; set; }
-        public DateTime PaidOn { get; set; }
 
-        public PaymentType Type { get; set; }
-    }
+        public PaymentMethod Method { get; set; }
 
-    public enum PaymentType
-    {
-        Cash = 1,
-        Installment = 2
+        public DateTime PaidAt { get; set; } = DateTime.UtcNow;
+
+        public string? Description { get; set; }
     }
 }

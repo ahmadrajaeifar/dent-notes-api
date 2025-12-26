@@ -15,6 +15,12 @@
                 MaxPageSize : value;
         }
 
+        public class PagedResult<T>
+        {
+            public int TotalCount { get; set; }
+            public IEnumerable<T> Items { get; set; } = new List<T>();
+        }
+
         public string? Search { get; set; }
         public string? SortBy { get; set; } = "id";
         public string? SortOrder { get; set; } = "desc";

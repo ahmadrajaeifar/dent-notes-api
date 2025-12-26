@@ -1,6 +1,6 @@
 ﻿namespace DentalClinic.Api.Entities
 {
-    public class PatientService
+    public class PatientProcedure
     {
         public int Id { get; set; }
 
