@@ -1,0 +1,67 @@
+﻿@page
+@model DentalClinic.Web.Pages.Auth.LoginModel
+@{
+}
+
+<form method="post">
+    
+	<div class="container-fluid p-0">
+        <div class="row">
+            <div class="col-md-8 col-sm-12 right">
+
+            </div>
+            <div class="col-md-4 col-sm-12 left d-flex justify-content-center align-items-center">
+                <div class="d-md-inline-block d-sm-none">
+                    <div class="container-fluid">
+                        <div class="row mb-4">
+                            <div class="col-4"></div>
+                            <div class="col pe-0">
+                                <img src="~/images/png/lock.png" 
+                                    alt="lock icon png" width="65" />
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row pb-1">
+                            <div class="col-4 pt-1 d-table">
+                                <span class="d-table-cell align-middle">نام کاربری</span>
+                            </div>
+                            <div class="col px-0">
+                                <input asp-for="Username" 
+                                    tabindex="1" autocomplete="off"
+                                    class="form-control text-end ltr" />
+                            </div>
+                            <div class="col-1 p-0 user">
+                                <i class="fa fa-user text-black-50"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 pt-1">
+                                <span>رمز عبور</span>
+                            </div>
+                            <div class="col px-0">
+                                <input type="password" asp-for="Password"
+                                        tabindex="2" autocomplete="off"
+                                    class="form-control text-end ltr"/>
+                                </div>
+                            <div class="col-1 p-0 key">
+                                <i class="fa fa-key text-black-50"></i>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-4"></div>
+                            <div class="col px-0">
+                                <button type="submit" class="btn btn-orange w-100">ورود</button>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+	{
+		<p style="color:red">@Model.ErrorMessage</p>
+	}
+</form>

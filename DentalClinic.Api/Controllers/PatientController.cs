@@ -63,6 +63,23 @@ namespace DentalClinic.Api.Controllers
             return Ok(new ApiResponse<PatientReadDto>(dto));
         }
 
+        [HttpGet("search")]
+        public IActionResult SearchPatients(
+            [FromQuery] PatientSearchDto searchDto,
+            [FromQuery] PaginationParams pagination)
+        {
+            var dentistId = User.GetUserId();
+
+            var patients = _patientService.SearchPatients(
+                searchDto,
+                pagination,
+                dentistId);
+
+            var result = _mapper.Map<List<PatientReadDto>>(patients);
+
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult CreatePatient(PatientCreateDto dto)
         {

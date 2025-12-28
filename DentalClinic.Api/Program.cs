@@ -27,6 +27,7 @@ builder.Services.AddScoped<DentistRepository>();
 builder.Services.AddScoped<DentistService>();
 builder.Services.AddScoped<PatientRepository>();
 builder.Services.AddScoped<PatientService>();
+builder.Services.AddScoped<PatientNoteService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -43,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ??
-                throw new Exception("JWT Key not found")))
+                throw new Exception("کلید JWT یافت نشد")))
         };
     });
 

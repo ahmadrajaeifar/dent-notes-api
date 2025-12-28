@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using DentalClinic.Api.DTOs.Dentists;
+using DentalClinic.Contracts.DTOs.Dentists;
 using DentalClinic.Api.DTOs.Invoices;
 using DentalClinic.Api.DTOs.Patients;
+using DentalClinic.Api.DTOs.Payments;
 using DentalClinic.Api.Entities;
 
 namespace DentalClinic.Api.Profiles
@@ -12,6 +13,8 @@ namespace DentalClinic.Api.Profiles
         {
             // Model -> DTO
             CreateMap<Patient, PatientReadDto>();
+            CreateMap<Patient, PatientDebtDto>();
+            CreateMap<Payment, PaymentReadDto>();
             CreateMap<Dentist, DentistReadDto>();
             CreateMap<DentistLoginResultDto, DentistReadDto>();
             CreateMap<Invoice, InvoiceReadDto>()

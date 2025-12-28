@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using DentalClinic.Api.DTOs.Common;
-using DentalClinic.Api.DTOs.Dentists;
-using DentalClinic.Api.Repositories;
+//using DentalClinic.Api.DTOs.Dentists;
+using DentalClinic.Contracts.DTOs.Dentists;
 using DentalClinic.Api.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DentalClinic.Api.Controllers

@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DentalClinic.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.css" />
+    <link rel="stylesheet" href="~/DentalClinic.Web.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
+
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/fonts/iransans/font.css" />
+    <link rel="stylesheet" href="~/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/css/prettyPhoto.css" />
+</head>
+<body class="m-0 p-0 min-vh-100" dir="rtl">
+    <div class="container-fluid">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/all.min.js" type="text/javascript"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

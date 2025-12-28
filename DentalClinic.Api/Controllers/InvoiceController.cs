@@ -29,6 +29,9 @@ namespace DentalClinic.Api.Controllers
         public IActionResult CreateInvoice(int patientId, 
             [FromBody] List<InvoiceItemCreateDto> items)
         {
+            if (items == null || !items.Any())
+                return BadRequest("حداقل یک خدمت باید ثبت شود");
+
             var invoice = _invoiceService.CreateInvoice(patientId, items);
             var dto = _mapper.Map<InvoiceReadDto>(invoice);
 

@@ -1,5 +1,6 @@
-﻿using DentalClinic.Api.Data.DBContext;
-using DentalClinic.Api.DTOs.Dentists;
+﻿using DentalClinic.Contracts.DTOs.Dentists;
+using DentalClinic.Contracts.DTOs.Reports;
+using DentalClinic.Api.Data.DBContext;
 using DentalClinic.Api.Entities;
 using DentalClinic.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace DentalClinic.Api.Services
         private readonly AppDbContext _context;
         private readonly DentistRepository _repo;
         private readonly TokenService _tokenService;
+
         public DentistService(
             AppDbContext context, 
             DentistRepository repo, 
@@ -23,7 +25,7 @@ namespace DentalClinic.Api.Services
             _tokenService = tokenService;
         }
 
-        public List<MonthlyIncomeDto> GetMonthlyIncome(int dentistId, int year)
+        public List<MonthlyIncomesDto> GetMonthlyIncome(int dentistId, int year)
         {
             var invoices = _context.Invoices
                 .Include(i => i.Payments)
@@ -33,7 +35,7 @@ namespace DentalClinic.Api.Services
             return invoices
                 .SelectMany(i => i.Payments)
                 .GroupBy(p => new { p.PaidAt.Year, p.PaidAt.Month })
-                .Select(g => new MonthlyIncomeDto
+                .Select(g => new MonthlyIncomesDto
                 {
                     Year = g.Key.Year,
                     Month = g.Key.Month,
