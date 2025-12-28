@@ -13,7 +13,8 @@ namespace DentalClinic.Api.Entities
         [RegularExpression(@"\d{10}", ErrorMessage = "کد ملی باید 10 رقمی باشد")]
         public string NationalCode { get; set; } = null!;
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-        public string? Notes { get; set; }
+
+        public List<PatientNote> Notes { get; set; } = new();
 
         public int DentistId { get; set; } //FK
         public Dentist Dentist { get; set; } = null!;

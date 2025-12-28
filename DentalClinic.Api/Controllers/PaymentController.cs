@@ -1,5 +1,7 @@
-﻿using DentalClinic.Api.DTOs.Common;
+﻿using AutoMapper;
+using DentalClinic.Api.DTOs.Common;
 using DentalClinic.Api.DTOs.Invoices;
+using DentalClinic.Api.DTOs.Patients;
 using DentalClinic.Api.DTOs.Payments;
 using DentalClinic.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +18,18 @@ namespace DentalClinic.Api.Controllers
         private readonly PaymentService _paymentService;
         private readonly PatientProcedureService _patientProcedureService;
         private readonly InvoiceService _invoiceService;
+        private readonly IMapper _mapper;
 
         public PaymentController(
             PaymentService paymentService,
             PatientProcedureService patientProcedureService,
-            InvoiceService invoiceService)
+            InvoiceService invoiceService,
+            IMapper mapper)
         {
             _paymentService = paymentService;
             _patientProcedureService = patientProcedureService;
             _invoiceService = invoiceService;
+            _mapper = mapper;
         }
 
         [HttpPost("{patientId}/invoice")]
@@ -45,14 +50,24 @@ namespace DentalClinic.Api.Controllers
                 dto.Method,
                 dto.Description);
 
-            return Ok(new ApiResponse<object>(payment));
+            var result = _mapper.Map<PaymentReadDto>(payment);
+            return Ok(new ApiResponse<object>(result));
         }
 
         [HttpGet("{patientId}/debt")]
-        public IActionResult GetDebt(int patientId)
+        public IActionResult GetPatientDebt(int patientId)
         {
             var debt = _patientProcedureService.GetPatientDebt(patientId);
-            return Ok(debt);
+            var dto = _mapper.Map<PatientDebtDto>(debt);
+            return Ok(dto);
+        }
+
+        [HttpGet("invoice/{invoiceId}")]
+        public IActionResult GetPaymentsByInvoice(int invoiceId)
+        {
+            var invoice = _invoiceService.GetInvoice(invoiceId);
+            var dto = _mapper.Map<InvoiceReadDto>(invoice);
+            return Ok(dto);
         }
     }
 }

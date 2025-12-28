@@ -27,6 +27,7 @@ builder.Services.AddScoped<DentistRepository>();
 builder.Services.AddScoped<DentistService>();
 builder.Services.AddScoped<PatientRepository>();
 builder.Services.AddScoped<PatientService>();
+builder.Services.AddScoped<PatientNoteService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
